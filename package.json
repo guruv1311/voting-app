@@ -4,7 +4,7 @@
   "description": "A car voting app with an HTML/CSS frontend and Node.js/Express backend using PostgreSQL",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node backend/server.js"
   },
   "keywords": ["voting", "express", "postgresql", "frontend", "backend", "car"],
   "author": "",
