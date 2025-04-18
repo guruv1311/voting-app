@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Car Voting App</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-image: url('https://wallpapercave.com/wp/wp9183365.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 100vh;
+    }
+
+    .App {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+
+    .container-box {
+      background: rgba(255, 255, 255, 0.791);
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    .buttons button {
+      margin: 10px;
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .buttons button:hover {
+      background-color: #0056b3;
+    }
+
+    .results {
+      margin-top: 20px;
+    }
+
+    .result-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background-color: #139dff;
+      border-radius: 8px;
+      width: 50%;
+      margin-left: 110px;
+      color: white;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="App">
+    <div class="container-box">
+      <h1>🏎️ Favourite Car 🏎️</h1>
+      <h1>🗳️ Cast Your Vote</h1>
+      <div class="buttons">
+        <button onclick="vote('BMW')">BMW</button>
+        <button onclick="vote('AUDI')">AUDI</button>
+        <button onclick="vote('Ferrari')">Ferrari</button>
+      </div>
+      <div class="results" id="results" style="display: none;">
+        <h2>📊 Results</h2>
+        <div class="result-list" id="result-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function vote(option) {
+      try {
+        const response = await fetch('/vote', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ option }),
+        });
+        if (response.ok) {
+          document.getElementById('results').style.display = 'block';
+          fetchResults();
+        }
+      } catch (err) {
+        console.error('Voting failed:', err);
+      }
+    }
+
+    async function fetchResults() {
+      try {
+        const response = await fetch('/results');
+        const data = await response.json();
+        const resultList = document.getElementById('result-list');
+        resultList.innerHTML = '';
+        data.forEach((r) => {
+          const div = document.createElement('div');
+          div.className = 'result-item';
+          div.innerHTML = `<span>${r.option}</span><span>${r.count}</span>`;
+          resultList.appendChild(div);
+        });
+      } catch (err) {
+        console.error('Fetching results failed:', err);
+      }
+    }
+
+    window.onload = fetchResults;
+  </script>
+</body>
+</html>
